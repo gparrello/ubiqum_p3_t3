@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 source("./plots.R")
 ```
 
-```{r exec=FALSE}
+```{r include=FALSE}
 ggplot(data = df) +
   aes(x = LONGITUDE, y = LATITUDE, color = TIMESTAMP) +
   geom_point() +
@@ -18,9 +18,10 @@ ggplot(data = df) +
   facet_wrap(vars(FLOOR))
 ```
 
-```{r exec=TRUE, warnings=FALSE}
+```{r exec=TRUE, warning=FALSE, message=FALSE}
 for(p in ridges){
   print(p)
 }
 ```
+
 Exists the possibility that the number of observations per reference (each point marked to be measured in the training set) is biased because many people went to measure the same reference and some were left unmeasured (only two observations for that place for example)
