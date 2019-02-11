@@ -25,11 +25,21 @@ for(i in 1:n){
   csub <- c[lower:upper]
   csub <- csub[!is.na(csub)]
   ridges[[i]] <- ggplot(subset(l, WAP %in% csub), aes(x = value, y = WAP)) +
-    geom_density_ridges() +
+    geom_density_ridges(scale = 10) +
     xlim(m1,m2) +
     facet_wrap(vars(BUILDINGID))
 }
-rm(l, c, n)
+# rm(l, c, n)
 
+m1 <- min(l[which(!is.na(l$value)),]$value)
+m2 <- max(l[which(!is.na(l$value)),]$value)
+r <- ggplot(l, aes(x = value, y = WAP)) +
+  geom_density_ridges(scale = 30) +
+  theme_ridges() +
+  theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
+  # theme(panel.spacing.x = 10) +
+  xlim(m1,m2) +
+  facet_wrap(vars(BUILDINGID))
+  # coord_fixed(2)
 # h <- fPlotHist(dt[["train"]])
 
