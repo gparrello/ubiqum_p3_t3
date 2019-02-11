@@ -43,11 +43,11 @@ for (s in names(files)) {
 
 
 for (c in names(check_list[["train"]])) {
-  print(c)
+  print(paste("in column", c))
   print("in training set but not in testing set:")
   print(setdiff(check_list[["train"]][[c]], check_list[["test"]][[c]]))
   print("in testing set but not in training set:")
   print(setdiff(check_list[["test"]][[c]], check_list[["train"]][[c]]))
-  browser()
+  # browser()
 }
 
