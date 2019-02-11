@@ -13,11 +13,55 @@ p <- ggplot(data = df) +
   theme_minimal() +
   facet_wrap(vars(FLOOR))
 
+
+# plot density functions for all WAPs for each building
+density_plots <- c()
+bar_plots <- c()
+ridges <- c()
+lowest_x <- 0
+highest_x <- 0
+for (s in names(longdt)){
+  dt <- longdt[[s]][which(!is.na(longdt[[s]]$value)), ]
+  dt$FLOOR <- as.factor(dt$FLOOR)
+  dt$BUILDING <- as.factor(dt$BUILDING)
+  lowest_x <- min(dt$value, lowest_x)
+  highest_x <- max(dt$value, highest_x)
+
+  density_plots[[s]] <- ggplot(data = dt) +
+    aes(x = value) +
+    geom_histogram(bins = 40, fill = '#0c4c8a') +
+    labs(title = 'Signal for all WAPs',
+         x = 'Signal',
+         y = 'Frequency',
+         subtitle = 'Separated by building') +
+    theme_minimal() +
+    xlim(lowest_x,highest_x) +
+    facet_wrap(vars(BUILDINGID))
+
+  bar_plots[[s]] <- ggplot(data = dt) +
+    aes(x = WAP) +
+    geom_bar(fill = '#0c4c8a') +
+    theme_minimal() +
+    facet_wrap(vars(BUILDINGID))
+  
+  ridges[[s]] <- ggplot(l, aes(x = value, y = WAP, fill = FLOOR)) +
+    geom_density_ridges(scale = 10) +
+    theme_ridges() +
+    scale_colour_viridis_d(option  = "magma") +
+    theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
+    xlim(lowest_x,highest_x) +
+    facet_wrap(vars(BUILDINGID))
+  
+  rm(dt)
+}
+
+# plot different ridges each containing 25 WAPs
 l <- longdt[["train"]]
+l2 <- l[!which(is.na(l$value)), ]
 
 waps <- unique(l$WAP)
 n <- ceiling(length(waps)/25)
-ridges <- c()
+ridges2 <- c()
 for(i in 1:n){
   lowest_x <- min(l[which(!is.na(l$value)),]$value)
   highest_x <- max(l[which(!is.na(l$value)),]$value)
@@ -25,22 +69,10 @@ for(i in 1:n){
   last_wap <- 25+(i-1)*25
   waps_subset <- waps[first_wap:last_wap]
   waps_subset <- waps_subset[!is.na(waps_subset)]
-  ridges[[i]] <- ggplot(subset(l, WAP %in% waps_subset), aes(x = value, y = WAP)) +
+  ridges2[[i]] <- ggplot(subset(l, WAP %in% waps_subset), aes(x = value, y = WAP)) +
     geom_density_ridges(scale = 10) +
     xlim(lowest_x,highest_x) +
     facet_wrap(vars(BUILDINGID))
 }
 # rm(l, waps, n)
-
-lowest_x <- min(l[which(!is.na(l$value)),]$value)
-highest_x <- max(l[which(!is.na(l$value)),]$value)
-r <- ggplot(l, aes(x = value, y = WAP)) +
-  geom_density_ridges(scale = 30) +
-  theme_ridges() +
-  theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
-  # theme(panel.spacing.x = 10) +
-  xlim(lowest_x,highest_x) +
-  facet_wrap(vars(BUILDINGID))
-  # coord_fixed(2)
-# h <- f_plot_hist(dt[["train"]])
 
