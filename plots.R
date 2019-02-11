@@ -41,11 +41,19 @@ for (s in names(longdt)){
   bar_plots[[s]] <- ggplot(data = dt) +
     aes(x = WAP) +
     geom_bar(fill = '#0c4c8a') +
+    labs(title = 'All WAPs',
+         x = 'WAP',
+         y = 'Frequency',
+         subtitle = 'Separated by building') +
     theme_minimal() +
     facet_wrap(vars(BUILDINGID))
   
-  ridges[[s]] <- ggplot(l, aes(x = value, y = WAP, fill = FLOOR)) +
+  ridges[[s]] <- ggplot(dt, aes(x = value, y = WAP, fill = FLOOR)) +
     geom_density_ridges(scale = 10) +
+    labs(title = 'Signal for each WAP',
+         x = 'Signal',
+         y = 'Frequency',
+         subtitle = 'Separated by building') +
     theme_ridges() +
     scale_colour_viridis_d(option  = "magma") +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
@@ -75,4 +83,3 @@ for(i in 1:n){
     facet_wrap(vars(BUILDINGID))
 }
 # rm(l, waps, n)
-
