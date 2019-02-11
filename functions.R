@@ -1,6 +1,12 @@
 pacman::p_load(
-  "rbokeh"
+  "rbokeh",
+  "dplyr"
 )
+
+outersect <- function(x, y) {
+  sort(c(setdiff(x, y),
+         setdiff(y, x)))
+}
 
 f_plot_hist <- function(dt){
   # To plot a grid of histograms
