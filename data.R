@@ -17,8 +17,8 @@ for(s in names(files)){
     set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }   
   
-  meltIds <- colnames(d[,521:529])
-  l <- melt(d, id.vars = meltIds)
+  melt_ids <- colnames(d[,521:529])
+  l <- melt(d, id.vars = melt_ids)
   names(l)[names(l) == 'variable'] <- 'WAP'
   longdt[[s]] <- l
   

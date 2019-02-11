@@ -2,7 +2,7 @@ pacman::p_load(
   "rbokeh"
 )
 
-fPlotHist <- function(dt){
+f_plot_hist <- function(dt){
   # To plot a grid of histograms
   dtNums <- unlist(lapply(dt, is.numeric))
   # http://bit.ly/2Bl3BSb
