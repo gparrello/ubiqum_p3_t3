@@ -10,12 +10,12 @@ files <- c(
 dt <- c()
 longdt <- c()
 check_list <- c()
-for(s in names(files)){
+for (s in names(files)) {
   
   d <- fread(files[[s]])
   
   # set 100 to NAs
-  for(j in seq_along(d[,1:520])) {
+  for (j in seq_along(d[,1:520])) {
     set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }   
   
