@@ -1,7 +1,8 @@
 pacman::p_load(
   "data.table",
   "ggplot2",
-  "ggridges"
+  "ggridges",
+  "rbokeh"
 )
 
 source("./data.R")
@@ -13,11 +14,11 @@ p <- ggplot(data = df) +
   theme_minimal() +
   facet_wrap(vars(FLOOR))
 
-
 # plot density functions for all WAPs for each building
 density_plots <- c()
 bar_plots <- c()
 ridges <- c()
+outliers <- c()
 lowest_x <- 0
 highest_x <- 0
 for (s in names(longdt)){
@@ -36,7 +37,8 @@ for (s in names(longdt)){
          subtitle = 'Separated by building') +
     theme_minimal() +
     xlim(lowest_x,highest_x) +
-    facet_wrap(vars(BUILDINGID))
+    # facet_wrap(vars(BUILDINGID))
+    facet_grid(rows = vars(FLOOR), cols = vars(BUILDINGID))
 
   bar_plots[[s]] <- ggplot(data = dt) +
     aes(x = WAP) +
@@ -46,7 +48,7 @@ for (s in names(longdt)){
          y = 'Frequency',
          subtitle = 'Separated by building') +
     theme_minimal() +
-    facet_wrap(vars(BUILDINGID))
+    facet_grid(rows = vars(FLOOR), cols = vars(BUILDINGID))
   
   ridges[[s]] <- ggplot(dt, aes(x = value, y = WAP, fill = FLOOR)) +
     geom_density_ridges(scale = 10) +
@@ -58,9 +60,22 @@ for (s in names(longdt)){
     scale_colour_viridis_d(option  = "magma") +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
     xlim(lowest_x,highest_x) +
-    facet_wrap(vars(BUILDINGID))
+    # facet_grid(rows = vars(FLOOR), cols = vars(BUILDINGID))
+    # facet_wrap(vars(BUILDINGID))
+    facet_wrap(vars(FLOOR))
   
-  rm(dt)
+  aggdt <- dt %>%
+    group_by(WAP) %>%
+    summarize(
+      signal = mean(value),
+      obs = n()
+    )
+  # browser()
+  outliers[[s]] <- figure() %>%
+    ly_points(aggdt, x=WAP, y=obs, color=signal, hover = c(WAP, signal, obs)) %>%
+    set_palette(continuous_color = pal_color(c("blue", "green", "yellow", "orange", "red")))
+  
+  rm(dt, aggdt)
 }
 
 # plot different ridges each containing 25 WAPs
