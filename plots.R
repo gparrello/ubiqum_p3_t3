@@ -3,6 +3,7 @@ pacman::p_load(
   "ggplot2",
   "ggridges",
   "rbokeh"
+  # "plotly"
 )
 
 source("./data.R")
@@ -72,10 +73,10 @@ for (s in names(longdt)){
     )
   # browser()
   outliers[[s]] <- figure() %>%
-    ly_points(aggdt, x=WAP, y=obs, color=signal, hover = c(WAP, signal, obs)) %>%
-    set_palette(continuous_color = pal_color(c("blue", "green", "yellow", "orange", "red")))
+    ly_points(aggdt, x=WAP, y=signal, color=obs, hover = c(WAP, signal, obs)) %>%
+    set_palette(continuous_color = pal_color(c("blue", "green", "yellow", "orange", "red", "purple")))
   
-  rm(dt, aggdt)
+  # rm(dt, aggdt)
 }
 
 # plot different ridges each containing 25 WAPs
