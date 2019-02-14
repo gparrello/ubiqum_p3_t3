@@ -21,8 +21,8 @@ for (s in names(files)) {
   
   # set 100 to NAs
   for (j in seq_along(d[,1:520])) {
-    set(d, i = which(d[[j]] == 100), j = j, value = NA)
-  }   
+    set(d, i = which(d[[j]] == 100), j = j, value = -105)
+  }
   
   factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
   dtnew <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
@@ -78,3 +78,48 @@ for (s in names(files)) {
   # browser()
 # }
 
+
+train <- dt[["train"]]
+sample <- train %>% group_by(BUILDINGID, FLOOR) %>% sample_n(10)
+
+# Load package
+library(randomForest)
+library(caret)
+
+# Saving the waps in a vector
+WAPs <- grep("WAP", names(train), value=T)
+
+# Get the best mtry
+bestmtry_rf <- tuneRF(
+  sample[WAPs],
+  sample$BUILDINGID,
+  ntreeTry = 100,
+  stepFactor = 2,
+  improve = 0.05,
+  trace = TRUE,
+  plot = TRUE
+)
+
+# Train a random forest using that mtry
+system.time(
+  rf_reg <- randomForest(
+    y = sample$LONGITUDE,
+    x = sample[WAPs],
+    importance = TRUE,
+    method = "rf",
+    ntree = 100,
+    mtry = bestmtry_rf[[1]]
+  )
+)
+
+# Train a random forest using caret package
+system.time(
+  rf_reg_caret <- train(
+    y = sample$LONGITUDE,
+    x = sample[WAPs],
+    data = sample,
+    method = "rf",
+    ntree = 100,
+    tuneGrid = expand.grid(.mtry=bestmtry_rf[[1]])
+  )
+)
