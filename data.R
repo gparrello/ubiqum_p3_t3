@@ -3,13 +3,18 @@ pacman::p_load(
   "dplyr"
 )
 
+source("./data_functions.R")
+
 files <- c(
   train = "./data/trainingData.csv",
   test = "./data/validationData.csv"
 )
+
 dt <- c()
 longdt <- c()
 check_list <- c()
+
+# Processing both datasets
 for (s in names(files)) {
   
   d <- fread(files[[s]])
@@ -19,13 +24,15 @@ for (s in names(files)) {
     set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }   
   
-  # melt into long format
-  melt_ids <- colnames(d[,521:529])
-  l <- melt(d, id.vars = melt_ids)
-  names(l)[names(l) == 'variable'] <- 'WAP'
-  longdt[[s]] <- l
+  factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
+  dtnew <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
+  # browser()
   
-  check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
+  # d$NEWID <- as.factor(paste(
+  #   d$BUILDINGID,".",
+  #   d$FLOORID,
+  #   sep = ""
+  # ))
   
   # remove all rows that only contain +100 in WAP signal
   # keeprows <- apply(dt[[s]][,1:520], 1, function(x) length(unique(x[!is.na(x)])) != 1)  # criteria for selecting 100 and not all rows with all -40 for example?
@@ -34,7 +41,27 @@ for (s in names(files)) {
   # remove all columns that only contain +100 in WAP signal
   # uniquelength <- sapply(dt[[s]],function(x) length(unique(x)))
   # dt[[s]] <- subset(dt[[s]], select= uniquelength > 1)
+  
+  # melt into long format
+  melt_ids <- colnames(d[,521:ncol(d)])
+  l <- melt(d, id.vars = melt_ids)
+  names(l)[names(l) == 'variable'] <- 'WAP'
+  longdt[[s]] <- l
 
+  check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
+  
+  # add top WAPs columns
+  # n <- 5
+  # for (k in 1:n){
+  #   
+  # }
+  
+  # tops <- apply(d[,1:520], 1, find_top_waps, k=1, names=FALSE)
+  # tops_names <- apply(d[,1:520], 1, find_top_waps, k=1, names=TRUE)
+  # d <- cbind(d, tops)
+  # d <- cbind(d, tops_names)
+  
+  
   dt[[s]] <- d
   
   rm(d, l)
