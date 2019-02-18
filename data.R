@@ -15,18 +15,21 @@ longdt <- c()
 check_list <- c()
 
 # Processing both datasets
+# browser()
 for (s in names(files)) {
   
   d <- fread(files[[s]])
+  waps <- grep("WAP", names(d), value=TRUE)
   
   # set 100 to NAs/-105
-  for (j in seq_along(d[,1:520])) {
+  for (j in seq_along(d[, ..waps])) {
     set(d, i = which(d[[j]] == 100), j = j, value = -105)
     # set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }
   
   factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
   d <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
+  # d <- d[, factors := lapply(.SD, as.factor), .SDcols=factors]
   
   # d$NEWID <- as.factor(paste(
   #   d$BUILDINGID,".",
@@ -75,49 +78,3 @@ for (s in names(files)) {
 #   print("in testing set but not in training set:")
 #   print(setdiff(check_list[["test"]][[c]], check_list[["train"]][[c]]))
 # }
-
-
-train <- dt[["train"]]
-sample <- train %>% group_by(BUILDINGID, FLOOR) %>% sample_n(10)
-
-# Load package
-library(randomForest)
-library(caret)
-
-# Saving the waps in a vector
-WAPs <- grep("WAP", names(train), value=T)
-
-# Get the best mtry
-bestmtry_rf <- tuneRF(
-  sample[WAPs],
-  sample$BUILDINGID,
-  ntreeTry = 100,
-  stepFactor = 2,
-  improve = 0.05,
-  trace = TRUE,
-  plot = TRUE
-)
-
-# Train a random forest using that mtry
-system.time(
-  rf_reg <- randomForest(
-    y = sample$LONGITUDE,
-    x = sample[WAPs],
-    importance = TRUE,
-    method = "rf",
-    ntree = 100,
-    mtry = bestmtry_rf[[1]]
-  )
-)
-
-# Train a random forest using caret package
-system.time(
-  rf_reg_caret <- train(
-    y = sample$LONGITUDE,
-    x = sample[WAPs],
-    data = sample,
-    method = "rf",
-    ntree = 100,
-    tuneGrid = expand.grid(.mtry=bestmtry_rf[[1]])
-  )
-)
