@@ -19,14 +19,14 @@ for (s in names(files)) {
   
   d <- fread(files[[s]])
   
-  # set 100 to NAs
+  # set 100 to NAs/-105
   for (j in seq_along(d[,1:520])) {
     set(d, i = which(d[[j]] == 100), j = j, value = -105)
+    # set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }
   
   factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
-  dtnew <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
-  # browser()
+  d <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
   
   # d$NEWID <- as.factor(paste(
   #   d$BUILDINGID,".",
@@ -48,19 +48,18 @@ for (s in names(files)) {
   names(l)[names(l) == 'variable'] <- 'WAP'
   longdt[[s]] <- l
 
-  check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
+  # check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
   
   # add top WAPs columns
-  # n <- 5
-  # for (k in 1:n){
-  #   
-  # }
-  
-  # tops <- apply(d[,1:520], 1, find_top_waps, k=1, names=FALSE)
-  # tops_names <- apply(d[,1:520], 1, find_top_waps, k=1, names=TRUE)
-  # d <- cbind(d, tops)
-  # d <- cbind(d, tops_names)
-  
+  n <- 1
+  for (k in 1:n) {
+    tops <- apply(d[,1:520], 1, find_top_waps, k = k, names = FALSE)
+    tops_names <- apply(d[,1:520], 1, find_top_waps, k = k, names = TRUE)
+    d <- cbind(d, tops)
+    d <- cbind(d, tops_names)
+    rm(tops, tops_names)
+  }
+  rm(n)
   
   dt[[s]] <- d
   
@@ -75,7 +74,6 @@ for (s in names(files)) {
 #   print(setdiff(check_list[["train"]][[c]], check_list[["test"]][[c]]))
 #   print("in testing set but not in training set:")
 #   print(setdiff(check_list[["test"]][[c]], check_list[["train"]][[c]]))
-  # browser()
 # }
 
 
