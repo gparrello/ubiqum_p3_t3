@@ -1,3 +1,7 @@
+pacman::p_load(
+  "dplyr"
+)
+
 find_top_waps <- function(x, names = FALSE, k = 1){
   
   # from:
@@ -18,7 +22,8 @@ remove_missing <- function(df){
   df <- subset(df, select = uniquelength>1)
   
   # Remove rows (WAP) where all the values = 0 (WAP was not detected)
-  keep <- apply(df[,1:183], 1, function(x) length(unique(x[!is.na(x)])) != 1)
-  df[keep, ]
+  waps <- grep("WAP", names(df), value = TRUE)
+  keep <- apply(df[, ..waps], 1, function(x) length(unique(x[!is.na(x)])) != 1)
+  return(df[keep, ])
 
 }
