@@ -10,3 +10,15 @@ find_top_waps <- function(x, names = FALSE, k = 1){
   return(x)
 
 }
+
+remove_missing <- function(df){
+  
+  # Remove columns (WAP) where all the values = 0 (WAP was not detected)
+  uniquelength <- sapply(df, function(x) length(unique(x)))
+  df <- subset(df, select = uniquelength>1)
+  
+  # Remove rows (WAP) where all the values = 0 (WAP was not detected)
+  keep <- apply(df[,1:183], 1, function(x) length(unique(x[!is.na(x)])) != 1)
+  df[keep, ]
+
+}
