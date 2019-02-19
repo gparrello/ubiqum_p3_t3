@@ -1,10 +1,10 @@
-do_training <- function(data, y){
-  
+do_modeling <- function(x, y){
+
   # Train Control
   cvFoldNum <- 10
   cvRepeatNum <- 5
   cvFolds <- createMultiFolds(
-    data[,y],
+    y,
     k = cvFoldNum,
     times = cvRepeatNum
   )
@@ -14,13 +14,10 @@ do_training <- function(data, y){
     index = cvFolds
   )
   
-  # Saving the waps in a vector
-  waps <- grep("WAP", names(data), value = TRUE)
-  
   # Get the best mtry
   bestmtry <- tuneRF(
-    data[waps],
-    data[,y],
+    x,
+    y,
     ntreeTry = 100,
     stepFactor = 2,
     improve = 0.05,
@@ -30,8 +27,8 @@ do_training <- function(data, y){
   
   # Train a random forest using that mtry
   model <- randomForest(
-    y = data[,y],
-    x = data[waps],
+    x = x,
+    y = y,
     importance = TRUE,
     method = "rf",
     ntree = 100,
@@ -40,4 +37,5 @@ do_training <- function(data, y){
   )
   
   return(model)
+
 }
