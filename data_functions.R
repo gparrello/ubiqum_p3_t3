@@ -24,6 +24,8 @@ remove_missing <- function(df){
   # Remove rows (WAP) where all the values = 0 (WAP was not detected)
   waps <- grep("WAP", names(df), value = TRUE)
   keep <- apply(df[, ..waps], 1, function(x) length(unique(x[!is.na(x)])) != 1)
-  return(df[keep, ])
+  df <- df[keep, ]
+  
+  return(df)
 
 }
