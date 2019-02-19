@@ -45,19 +45,22 @@ for (s in names(files)) {
   # uniquelength <- sapply(dt[[s]],function(x) length(unique(x)))
   # dt[[s]] <- subset(dt[[s]], select= uniquelength > 1)
   
+  d <- remove_missing(d)
+  
   # melt into long format
-  melt_ids <- colnames(d[,521:ncol(d)])
-  l <- melt(d, id.vars = melt_ids)
-  names(l)[names(l) == 'variable'] <- 'WAP'
-  longdt[[s]] <- l
+  # melt_ids <- colnames(d[,521:ncol(d)])
+  # l <- melt(d, id.vars = melt_ids)
+  # names(l)[names(l) == 'variable'] <- 'WAP'
+  # longdt[[s]] <- l
 
   # check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
   
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
-    tops <- apply(d[,1:520], 1, find_top_waps, k = k, names = FALSE)
-    tops_names <- apply(d[,1:520], 1, find_top_waps, k = k, names = TRUE)
+    waps <- grep("WAP", names(d), value=TRUE)
+    tops <- apply(d[,..waps], 1, find_top_waps, k = k, names = FALSE)
+    tops_names <- apply(d[,..waps], 1, find_top_waps, k = k, names = TRUE)
     d <- cbind(d, tops)
     d <- cbind(d, tops_names)
     rm(tops, tops_names)
@@ -66,7 +69,7 @@ for (s in names(files)) {
   
   dt[[s]] <- d
   
-  rm(d, l)
+  # rm(d, l)
   # rm(keeprows, uniquelength)
 }
 
@@ -78,3 +81,9 @@ for (s in names(files)) {
 #   print("in testing set but not in training set:")
 #   print(setdiff(check_list[["test"]][[c]], check_list[["train"]][[c]]))
 # }
+
+common_columns <- intersect(
+  colnames(dt[["test"]]),
+  colnames(dt[["train"]])
+)
+dt[["train"]] <- dt[["train"]][,..common_columns]
