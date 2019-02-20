@@ -1,3 +1,11 @@
+pacman::p_load(
+  "readr",
+  "caret",
+  "randomForest",
+  "e1071",
+  "gbm",
+)
+
 do_modeling <- function(x, y){
 
   # Train Control
@@ -26,7 +34,7 @@ do_modeling <- function(x, y){
   )
   
   # Train a random forest using that mtry
-  model <- randomForest(
+  model[["rf"]] <- randomForest(
     x = x,
     y = y,
     importance = TRUE,
@@ -35,6 +43,12 @@ do_modeling <- function(x, y){
     mtry = bestmtry[[1]],
     trControl = fitControl
   )
+  
+  # Train a svm
+  # model[["svm"]] <- svm(y = y, x = x, trControl = fitControl)
+  
+  # Train a gbm
+  # model[["gbm"]] <- gbm(x = x, y = y)
   
   return(model)
 
