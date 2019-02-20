@@ -15,7 +15,6 @@ longdt <- c()
 check_list <- c()
 
 # Processing both datasets
-# browser()
 for (s in names(files)) {
   
   d <- fread(files[[s]])
@@ -36,14 +35,6 @@ for (s in names(files)) {
   #   d$FLOORID,
   #   sep = ""
   # ))
-  
-  # remove all rows that only contain +100 in WAP signal
-  # keeprows <- apply(dt[[s]][,1:520], 1, function(x) length(unique(x[!is.na(x)])) != 1)  # criteria for selecting 100 and not all rows with all -40 for example?
-  # dt[[s]] <- dt[[s]][keeprows,]
-  
-  # remove all columns that only contain +100 in WAP signal
-  # uniquelength <- sapply(dt[[s]],function(x) length(unique(x)))
-  # dt[[s]] <- subset(dt[[s]], select= uniquelength > 1)
   
   d <- remove_missing(d)
   
