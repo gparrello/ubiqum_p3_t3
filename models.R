@@ -1,5 +1,4 @@
 pacman::p_load(
-  "randomForest",
   "caret"
 )
 
@@ -19,6 +18,7 @@ common_columns <- intersect(
 validation <- dt[["test"]][,..common_columns]
 
 metrics <- c()
+
 
 #### Predicting building ####
 # Prepare data
