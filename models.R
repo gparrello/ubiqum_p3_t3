@@ -7,7 +7,7 @@ set.seed(123)
 source("./data.R")
 source("./model_functions.R")
 
-sample_size <- 200
+sample_size <- 300
 sample <- dt[["train"]] %>%
   group_by(BUILDINGID, FLOOR) %>%
   sample_n(sample_size)
