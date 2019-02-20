@@ -27,12 +27,11 @@ data <- sample
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
 dependents <- waps
-model <- do_modeling(data[dependents], data$BUILDINGID)
+model <- save_model("building", data[dependents], data$BUILDINGID)
 
 # Get metrics
 data <- validation
-waps <- grep("WAP", names(data), value = TRUE)
-metrics[["building"]] <- postResample(predict(model, data[,..dependents]), data$BUILDINGID)
+metrics[["building"]] <- get_metrics(validation, model, data$BUILDINGID)
 
 
 #### Predicting floor ####
@@ -42,12 +41,11 @@ data <- sample
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
 dependents <- c(waps, "BUILDINGID")
-model <- do_modeling(data[dependents], data$FLOOR)
+model <- save_model("floor", data[dependents], data$FLOOR)
 
 # Get metrics
 data <- validation
-waps <- grep("WAP", names(data), value = TRUE)
-metrics[["floor"]] <- postResample(predict(model, data[,..dependents]), data$FLOOR)
+metrics[["floor"]] <- get_metrics(validation, model, data$FLOOR)
 
 
 #### Predicting longitude ####
@@ -57,12 +55,11 @@ data <- sample
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
 dependents <- c(waps, "BUILDINGID", "FLOOR")
-model <- do_modeling(data[dependents], data$LONGITUDE)
+model <- save_model("long", data[dependents], data$LONGITUDE)
 
 # Get metrics
 data <- validation
-waps <- grep("WAP", names(data), value = TRUE)
-metrics[["long"]] <- postResample(predict(model, data[,..dependents]), data$LONGITUDE)
+metrics[["long"]] <- get_metrics(validation, model, data$LONGITUDE)
 
 
 #### Predicting latitude ####
@@ -72,9 +69,13 @@ data <- sample
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
 dependents <- c(waps, "BUILDINGID", "FLOOR", "LONGITUDE")
-model <- do_modeling(data[dependents], data$LATITUDE)
+model <- save_model("lat", data[dependents], data$LATITUDE)
 
 # Get metrics
 data <- validation
-waps <- grep("WAP", names(data), value = TRUE)
-metrics[["lat"]] <- postResample(predict(model, data[,..dependents]), data$LATITUDE)
+metrics[["lat"]] <- get_metrics(validation, model, data$LATITUDE)
+
+
+# try making unique labels with long+lat+floor and using
+# the validation set too! it will give you very rich data because
+# the validation set locations are not fixed

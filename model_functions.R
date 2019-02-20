@@ -39,3 +39,44 @@ do_modeling <- function(x, y){
   return(model)
 
 }
+
+
+get_metrics <- function(data, model, real){
+  
+  metric <- c()
+  for(m in names(model)){
+    waps <- grep("WAP", names(data), value = TRUE)
+    predicted <- predict(model[[m]], data[,..dependents])
+    metric[[m]] <- postResample(predicted, real)
+  }
+  
+  return(metric)
+
+}
+
+save_model <- function(label, x, y){
+  
+  get_time <- function(){
+    t <- round(as.numeric(as.POSIXct(Sys.time())), 0)
+    return(t)
+  }
+  
+  start_time <- get_time()
+  model <- do_modeling(x, y)
+  end_time <- get_time()
+  
+  filename <- paste(
+    "./models/",
+    label,
+    "/",
+    start_time,
+    "_",
+    end_time,
+    ".rba",
+    sep=""
+  )
+  
+  save(model, file = filename)
+  
+  return(model)
+}
