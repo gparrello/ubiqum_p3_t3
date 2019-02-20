@@ -4,10 +4,16 @@ pacman::p_load(
   "randomForest",
   "e1071",
   "gbm",
+  "doParallel"
 )
 
 do_modeling <- function(x, y){
 
+  model <- c()
+  cl <- makeCluster(detectCores() - 2)
+  registerDoParallel(cl)
+  
+  
   # Train Control
   cvFoldNum <- 10
   cvRepeatNum <- 5
@@ -19,7 +25,8 @@ do_modeling <- function(x, y){
   
   fitControl <- trainControl(
     method = "repeatedcv",
-    index = cvFolds
+    index = cvFolds,
+    allowParallel = TRUE
   )
   
   # Get the best mtry
@@ -30,7 +37,8 @@ do_modeling <- function(x, y){
     stepFactor = 2,
     improve = 0.05,
     trace = TRUE,
-    plot = FALSE
+    plot = FALSE,
+    trControl = fitControl
   )
   
   # Train a random forest using that mtry
@@ -50,6 +58,8 @@ do_modeling <- function(x, y){
   # Train a gbm
   # model[["gbm"]] <- gbm(x = x, y = y)
   
+  
+  stopCluster(cl)
   return(model)
 
 }
