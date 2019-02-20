@@ -26,8 +26,8 @@ data <- sample
 
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
-dependents <- waps
-model <- save_model("building", data[dependents], data$BUILDINGID)
+predictors <- waps
+model <- save_model("building", data[predictors], data$BUILDINGID)
 
 # Get metrics
 data <- validation
@@ -40,12 +40,14 @@ data <- sample
 
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
-dependents <- c(waps, "BUILDINGID")
-model <- save_model("floor", data[dependents], data$FLOOR)
+predictors <- c(waps, "BUILDINGID")
+model <- save_model("floor", data[predictors], data$FLOOR)
 
 # Get metrics
 data <- validation
-metrics[["floor"]] <- get_metrics(validation, model, data$FLOOR)
+waps <- grep("WAP", names(data), value = TRUE)
+predictors <- c(waps, "BUILDINGID")
+metrics[["floor"]] <- get_metrics(data[,..predictors], model, data$FLOOR)
 
 
 #### Predicting longitude ####
@@ -54,12 +56,14 @@ data <- sample
 
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
-dependents <- c(waps, "BUILDINGID", "FLOOR")
-model <- save_model("long", data[dependents], data$LONGITUDE)
+predictors <- c(waps, "BUILDINGID", "FLOOR")
+model <- save_model("long", data[predictors], data$LONGITUDE)
 
 # Get metrics
 data <- validation
-metrics[["long"]] <- get_metrics(validation, model, data$LONGITUDE)
+waps <- grep("WAP", names(data), value = TRUE)
+predictors <- c(waps, "BUILDINGID", "FLOOR")
+metrics[["long"]] <- get_metrics(data[,..predictors], model, data$LONGITUDE)
 
 
 #### Predicting latitude ####
@@ -68,14 +72,11 @@ data <- sample
 
 # Modeling
 waps <- grep("WAP", names(data), value = TRUE)
-dependents <- c(waps, "BUILDINGID", "FLOOR", "LONGITUDE")
-model <- save_model("lat", data[dependents], data$LATITUDE)
+predictors <- c(waps, "BUILDINGID", "FLOOR", "LONGITUDE")
+model <- save_model("lat", data[predictors], data$LATITUDE)
 
 # Get metrics
 data <- validation
-metrics[["lat"]] <- get_metrics(validation, model, data$LATITUDE)
-
-
-# try making unique labels with long+lat+floor and using
-# the validation set too! it will give you very rich data because
-# the validation set locations are not fixed
+waps <- grep("WAP", names(data), value = TRUE)
+predictors <- c(waps, "BUILDINGID", "FLOOR", "LONGITUDE")
+metrics[["lat"]] <- get_metrics(data[,..predictors], model, data$LATITUDE)

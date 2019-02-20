@@ -55,12 +55,11 @@ do_modeling <- function(x, y){
 }
 
 
-get_metrics <- function(data, model, real){
+get_metrics <- function(predictors, model, real){
   
   metric <- c()
   for(m in names(model)){
-    waps <- grep("WAP", names(data), value = TRUE)
-    predicted <- predict(model[[m]], data[,..dependents])
+    predicted <- predict(model[[m]], predictors)
     metric[[m]] <- postResample(predicted, real)
   }
   
