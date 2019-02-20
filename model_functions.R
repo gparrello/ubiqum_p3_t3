@@ -1,6 +1,5 @@
 pacman::p_load(
   # "readr",
-  "doParallel",
   "caret",
   "xgboost",
   "randomForest",
@@ -11,10 +10,6 @@ pacman::p_load(
 do_modeling <- function(x, y, caret = FALSE){
 
   model <- c()
-  cores <- detectCores() - 2
-  cluster <- makeCluster(cores, type = "FORK")
-  registerDoParallel(cluster)
-  
   
   # Train Control
   cvFoldNum <- 10
@@ -82,7 +77,6 @@ do_modeling <- function(x, y, caret = FALSE){
 
   }
   
-  stopCluster(cluster)
   return(model)
 
 }
@@ -101,7 +95,7 @@ get_metrics <- function(predictors, model, real){
 }
 
 save_model <- function(label, x, y){
-  
+
   get_time <- function(){
     t <- round(as.numeric(as.POSIXct(Sys.time())), 0)
     return(t)
