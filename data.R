@@ -78,3 +78,4 @@ common_columns <- intersect(
   colnames(dt[["train"]])
 )
 dt[["train"]] <- dt[["train"]][,..common_columns]
+dt[["common"]] <- rbind(dt[["train"]], dt[["test"]][,..common_columns])

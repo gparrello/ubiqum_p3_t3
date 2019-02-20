@@ -29,3 +29,18 @@ remove_missing <- function(df){
   return(df)
 
 }
+
+make_partition <- function(data, dependent){
+  
+  sets <- c()
+  in_training <- createDataPartition(
+    dependent,
+    p = .75,
+    list = FALSE
+  )
+  sets[["train"]] <- data[in_training,]
+  sets[["test"]] <- data[-in_training,]
+
+  return(sets)
+  
+}
