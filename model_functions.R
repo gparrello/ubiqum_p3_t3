@@ -93,3 +93,12 @@ save_model <- function(label, x, y){
   
   return(model)
 }
+
+get_predictors <- function(data, predictors = c()){
+  
+  waps <- grep("WAP", names(data), value = TRUE)
+  predictors <- c(waps, predictors)  
+  
+  return(predictors)
+
+}
