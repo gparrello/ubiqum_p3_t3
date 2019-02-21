@@ -26,11 +26,13 @@ for (s in names(files)) {
     # set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }
   
+  # convert attributes to factor
   factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
   d <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
   # d <- d[, factors := lapply(.SD, as.factor), .SDcols=factors]
   
-  d <- remove_missing(d)
+  # remove rows and columns with 0 variance
+  d <- remove_novar(d)
   
   # melt into long format
   # melt_ids <- colnames(d[,521:ncol(d)])
