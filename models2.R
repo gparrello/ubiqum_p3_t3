@@ -11,7 +11,7 @@ source("./data_functions.R")
 
 do_training <- function(label, y, added_predictor, orig_sample){
   
-  # Prepared data
+  # Prepare data
   sample <- make_partition(orig_sample, orig_sample[[y]])
   train <- sample[["train"]]
   validation <- sample[["test"]]
