@@ -30,12 +30,6 @@ for (s in names(files)) {
   d <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
   # d <- d[, factors := lapply(.SD, as.factor), .SDcols=factors]
   
-  # d$NEWID <- as.factor(paste(
-  #   d$BUILDINGID,".",
-  #   d$FLOORID,
-  #   sep = ""
-  # ))
-  
   d <- remove_missing(d)
   
   # melt into long format
@@ -44,8 +38,6 @@ for (s in names(files)) {
   # names(l)[names(l) == 'variable'] <- 'WAP'
   # longdt[[s]] <- l
 
-  # check_list[[s]] <- apply(longdt[[s]][, c(3:8, 10)], 2, unique)
-  
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
@@ -63,15 +55,6 @@ for (s in names(files)) {
   # rm(d, l)
   # rm(keeprows, uniquelength)
 }
-
- 
-# for (c in names(check_list[["train"]])) {
-#   print(paste("in column", c))
-#   print("in training set but not in testing set:")
-#   print(setdiff(check_list[["train"]][[c]], check_list[["test"]][[c]]))
-#   print("in testing set but not in training set:")
-#   print(setdiff(check_list[["test"]][[c]], check_list[["train"]][[c]]))
-# }
 
 common_columns <- intersect(
   colnames(dt[["test"]]),
