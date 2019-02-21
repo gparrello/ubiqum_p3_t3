@@ -52,11 +52,16 @@ predicted <- c(
   "LONGITUDE"
 )
 added_predictors <- list(
-  c(),
+  NULL,
   c("BUILDINGID"),
   c("BUILDINGID", "FLOOR"),
   c("BUILDINGID", "FLOOR", "LONGITUDE"),
   c("BUILDINGID", "FLOOR", "LATITUDE")
+  # c("tops", "tops_names"),
+  # c("BUILDINGID", "tops", "tops_names"),
+  # c("BUILDINGID", "FLOOR", "tops", "tops_names"),
+  # c("BUILDINGID", "FLOOR", "LONGITUDE", "tops", "tops_names"),
+  # c("BUILDINGID", "FLOOR", "LATITUDE", "tops", "tops_names")
 )
 names(predicted) <- labels
 names(added_predictors) <- labels
