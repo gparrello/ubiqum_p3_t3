@@ -66,6 +66,11 @@ names(added_predictors) <- labels
 # cluster <- makeCluster(cores, type = "FORK")
 # registerDoParallel(cluster)
 for(l in labels){
-  metrics[[l]] <- do_training(l, predicted[[l]], added_predictors[[l]], orig_sample)
+  metrics[[l]] <- do_training(
+    l,
+    predicted[[l]],
+    added_predictors[[l]],
+    orig_sample
+  )
 }
 # stopCluster(cluster)
