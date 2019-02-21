@@ -10,18 +10,44 @@ knitr::opts_chunk$set(echo = TRUE)
 source("./plots.R")
 ```
 
-```{r include=FALSE}
-ggplot(data = df) +
-  aes(x = LONGITUDE, y = LATITUDE, color = TIMESTAMP) +
-  geom_point() +
-  theme_minimal() +
-  facet_wrap(vars(FLOOR))
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=11}
+density_plots
+bar_plots
+outliers[["train"]]
+outliers[["test"]]
 ```
 
-```{r exec=TRUE, warning=FALSE, message=FALSE}
+```{r echo=FALSE, eval=FALSE, include=FALSE}
+p
+```
+
+```{r echo=FALSE, eval=FALSE}
+for (s in names(longdt)) {
+  print(
+  ggplot(data = longdt[[s]]) +
+    aes(x = LONGITUDE, y = LATITUDE, color = WAP) +
+    geom_point() +
+    scale_colour_viridis_d(option  = "magma") +
+    theme_minimal() +
+    theme(legend.position = 'none') +
+    facet_wrap(vars(FLOOR))
+  )
+}
+```
+
+```{r eval=FALSE, include=FALSE, warning=FALSE, message=FALSE}
 for(p in ridges){
   print(p)
 }
 ```
 
-Exists the possibility that the number of observations per reference (each point marked to be measured in the training set) is biased because many people went to measure the same reference and some were left unmeasured (only two observations for that place for example)
+```{r echo=FALSE, eval=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=30}
+ridges
+```
+
+# This is a header
+
+**Exists** the possibility that the number of observations per reference (each point marked to be measured in the training set) is biased because many people went to measure the same reference and some were left unmeasured (only two observations for that place for example)
+
+# Outliers
+User 6 with phone id 19? (recheck) does incorrect measures (too high signal) in floors 3 and 4 from building 2
