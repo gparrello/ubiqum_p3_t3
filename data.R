@@ -28,18 +28,21 @@ for (s in names(files)) {
   
   # convert attributes to factor
   factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
-  d <- d[, (523:528) := lapply(.SD, as.factor), .SDcols=factors]
-  # d <- d[, factors := lapply(.SD, as.factor), .SDcols=factors]
+  d <- d[, (factors) := lapply(.SD, as.factor), .SDcols=factors]
   
   # remove rows and columns with 0 variance
   d <- remove_novar(d)
   
   # melt into long format
-  # melt_ids <- colnames(d[,521:ncol(d)])
-  # l <- melt(d, id.vars = melt_ids)
-  # names(l)[names(l) == 'variable'] <- 'WAP'
-  # longdt[[s]] <- l
+  waps <- grep("WAP", names(d), value=TRUE)
+  melt_ids <- colnames(d[,(length(waps)+1):ncol(d)])
+  l <- melt(d, id.vars = melt_ids)
+  names(l)[names(l) == 'variable'] <- 'WAP'
+  longdt[[s]] <- l
 
+  # weight signal according to phone brand
+  # there is no phone brand in the validation set!
+    
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
@@ -51,6 +54,7 @@ for (s in names(files)) {
     rm(tops, tops_names)
   }
   rm(n)
+  d$tops_names <- as.factor(d$tops_names)
   
   dt[[s]] <- d
   
