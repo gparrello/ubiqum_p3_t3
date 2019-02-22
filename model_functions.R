@@ -80,13 +80,23 @@ do_modeling <- function(x, y, caret = FALSE){
 
 }
 
+get_predictions <- function(predictors, model){
+  
+  predicted <- c()
+  for(m in names(model)){
+    p <- predict(model[[m]], predictors)
+    predicted[[m]] <- p
+  }
+  
+  return(predicted)
+  
+}
 
-get_metrics <- function(predictors, model, real){
+get_metrics <- function(predicted, real){
   
   metrics <- data.frame()
-  for(m in names(model)){
-    predicted <- predict(model[[m]], predictors)
-    metric <- as.data.frame(postResample(predicted, real))
+  for(m in names(predicted)){
+    metric <- as.data.frame(postResample(predicted[[m]], real))
     colnames(metric) <- "value"
     metric$model <- m
     metrics <- rbind(metrics, metric)
@@ -98,6 +108,33 @@ get_metrics <- function(predictors, model, real){
   return(metrics)
 
 }
+
+
+get_errors <- function(predicted, real){
+  
+  error <- c()
+  for(m in names(predicted)){
+    p <- predicted[[m]]
+    if (is.numeric(p)) {
+      e <- p - real
+      e <- ggplot(data = as.data.frame(e)) +
+        aes(x = e) +
+        # geom_histogram(bins = 30, fill = '#0c4c8a') +
+        geom_histogram(
+          binwidth = function(x) 2 * IQR(x) / (length(x)^(1/3)),
+          fill = '#0c4c8a'
+        ) +
+        theme_minimal()
+    } else {
+      e <- confusionMatrix(p, real)
+    }
+    error[[m]] <- e
+  }
+  
+  return(error)
+  
+}
+
 
 get_time <- function(){
   t <- round(as.numeric(as.POSIXct(Sys.time())), 0)

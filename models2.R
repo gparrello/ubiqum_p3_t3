@@ -24,18 +24,26 @@ do_training <- function(label, y, added_predictor, sample){
   # Get metrics
   data <- validation
   predictors <- get_predictors(data, added_predictor)
-  metric <- get_metrics(data[predictors], model, data[[y]])
+  predicted <- get_predictions(data[predictors], model)
+  metric <- get_metrics(predicted, data[[y]])
+  error <- get_errors(predicted, data[[y]])
+  # browser()
   
-  return(metric)
+  result <- list(
+    metric = metric,
+    error = error
+  )
+  
+  return(result)
   
 }
 
-sample_size <- 958
+sample_size <- 10
 orig_sample <- dt[["common"]] %>%
   group_by(BUILDINGID, FLOOR) %>%
   sample_n(sample_size)
 
-metrics <- c()
+results <- c()
 
 labels <- c(
   "building",
@@ -71,7 +79,7 @@ names(added_predictors) <- labels
 # cluster <- makeCluster(cores, type = "FORK")
 # registerDoParallel(cluster)
 for(l in labels){
-  metrics[[l]] <- do_training(
+  results[[l]] <- do_training(
     l,
     predicted[[l]],
     added_predictors[[l]],
@@ -80,6 +88,10 @@ for(l in labels){
 }
 
 # save metrics
+metrics <- c()
+for(r in names(results)){
+  metrics[[r]] <- results[[r]]$metric
+}  
 metrics <- melt(metrics)
 write.csv(metrics, file = paste("./metrics/", get_time(), ".csv", sep = ""))
 
