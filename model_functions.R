@@ -61,18 +61,30 @@ do_modeling <- function(x, y, caret = FALSE){
       improve = 0.05,
       trace = TRUE,
       plot = FALSE,
-      trControl = fitControl
+      trControl = fitControl,
+      allowParallel = TRUE
     )
-    
+
     model[["rf"]] <- randomForest(
       y = y,
       x = x,
       importance = TRUE,
       method = "rf",
-      ntree = 100,
+      ntree = 500,
       mtry = bestmtry[[1]],
-      trControl = fitControl
+      trControl = fitControl,
+      allowParallel = TRUE
     )
+    
+    temp_data <- as.data.frame(cbind(as.data.frame(x),as.data.frame(y)))
+    model[["gbm"]] <- gbm(
+      y ~ .,
+      data = temp_data,
+      n.trees = 500,
+      cv.folds = 10,
+      n.cores = 6
+    )
+    rm(temp_data)
 
   }
   

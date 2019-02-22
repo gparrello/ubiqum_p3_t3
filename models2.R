@@ -1,6 +1,6 @@
 pacman::p_load(
   "caret",
-  "doParallel"
+  "doMC"
 )
 
 set.seed(123)
@@ -75,9 +75,8 @@ names(predicted) <- labels
 names(added_predictors) <- labels
 
 # Do the magic
-# cores <- detectCores() - 2
-# cluster <- makeCluster(cores, type = "FORK")
-# registerDoParallel(cluster)
+# cores <- 6
+# registerDoMC(cores = cores)
 for(l in labels){
   results[[l]] <- do_training(
     l,
@@ -94,5 +93,3 @@ for(r in names(results)){
 }  
 metrics <- melt(metrics)
 write.csv(metrics, file = paste("./metrics/", get_time(), ".csv", sep = ""))
-
-# stopCluster(cluster)
