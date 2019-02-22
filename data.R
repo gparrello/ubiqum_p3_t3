@@ -12,6 +12,7 @@ files <- c(
 )
 
 dt <- c()
+# orig <- c()
 longdt <- c()
 check_list <- c()
 factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
@@ -20,6 +21,7 @@ factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "U
 for (s in names(files)) {
   
   d <- fread(files[[s]])
+  # orig[[s]] <- d
   waps <- grep("WAP", names(d), value=TRUE)
   
   # set 100 to NAs/-105
