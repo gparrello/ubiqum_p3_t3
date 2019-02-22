@@ -9,12 +9,12 @@ source("./model_functions.R")
 source("./data_functions.R")
 
 
-do_training <- function(label, y, added_predictor, orig_sample){
+do_training <- function(label, y, added_predictor, sample){
   
   # Prepare data
-  sample <- make_partition(orig_sample, orig_sample[[y]])
-  train <- sample[["train"]]
-  validation <- sample[["test"]]
+  data <- make_partition(sample, sample[[y]])
+  train <- data[["train"]]
+  validation <- data[["test"]]
   
   # Modeling
   data <- train
