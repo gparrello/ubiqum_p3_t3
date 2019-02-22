@@ -40,9 +40,6 @@ for (s in names(files)) {
   names(l)[names(l) == 'variable'] <- 'WAP'
   longdt[[s]] <- l
 
-  # weight signal according to phone brand
-  
-      
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
@@ -65,9 +62,42 @@ for (s in names(files)) {
   # rm(d, l)
 }
 
+
+# weight signal according to phone brand
+common_columns <- Reduce(
+  intersect, list(
+    colnames(longdt[["train"]]),
+    colnames(longdt[["validation"]]),
+    colnames(longdt[["test"]])
+  )
+)
+longdt[["common"]] <- rbind(
+  longdt[["train"]][,..common_columns],
+  longdt[["validation"]][,..common_columns],
+  longdt[["test"]][,..common_columns]
+)
+
+devs <- longdt[["common"]] %>%
+  group_by(PHONEID) %>%
+  summarize(
+    abs_dev = mean(value) - mean(l$value),
+    rel_dev = 1+(mean(value) - mean(l$value))/abs(mean(l$value))
+  )
+for (dn in names(dt)) {
+  d <- dt[[dn]]
+  d <- merge(
+    d, devs,
+    by = "PHONEID"
+  )
+  waps <- grep("WAP", names(d), value=TRUE)
+  d <- d[, (waps) := lapply(.SD, function(x) x-abs_dev), .SDcols=waps]
+  # dt[[dn]] <- d
+}
+
+# intersect
 common_columns <- intersect(
-  colnames(dt[["validation"]]),
-  colnames(dt[["train"]])
+  colnames(dt[["train"]]),
+  colnames(dt[["validation"]])
 )
 dt[["common"]] <- rbind(
   dt[["train"]][,..common_columns],
