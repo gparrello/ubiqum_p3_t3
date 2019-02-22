@@ -8,7 +8,7 @@ source("./data_functions.R")
 files <- c(
   train = "./data/trainingData.csv",
   validation = "./data/validationData.csv",
-  test2 = "./data/testData.csv"
+  test = "./data/testData.csv"
 )
 
 dt <- c()
