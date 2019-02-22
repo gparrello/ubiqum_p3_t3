@@ -7,12 +7,14 @@ source("./data_functions.R")
 
 files <- c(
   train = "./data/trainingData.csv",
-  test = "./data/validationData.csv"
+  validation = "./data/validationData.csv",
+  test2 = "./data/testData.csv"
 )
 
 dt <- c()
 longdt <- c()
 check_list <- c()
+factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
 
 # Processing both datasets
 for (s in names(files)) {
@@ -27,7 +29,6 @@ for (s in names(files)) {
   }
   
   # convert attributes to factor
-  factors <- c("FLOOR", "BUILDINGID", "SPACEID", "RELATIVEPOSITION", "PHONEID", "USERID")
   d <- d[, (factors) := lapply(.SD, as.factor), .SDcols=factors]
   
   # remove rows and columns with 0 variance
@@ -41,8 +42,8 @@ for (s in names(files)) {
   longdt[[s]] <- l
 
   # weight signal according to phone brand
-  # there is no phone brand in the validation set!
-    
+  
+      
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
@@ -63,8 +64,10 @@ for (s in names(files)) {
 }
 
 common_columns <- intersect(
-  colnames(dt[["test"]]),
+  colnames(dt[["validation"]]),
   colnames(dt[["train"]])
 )
-dt[["train"]] <- dt[["train"]][,..common_columns]
-dt[["common"]] <- rbind(dt[["train"]], dt[["test"]][,..common_columns])
+dt[["common"]] <- rbind(
+  dt[["train"]][,..common_columns],
+  dt[["validation"]][,..common_columns]
+)
