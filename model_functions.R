@@ -84,22 +84,28 @@ do_modeling <- function(x, y, caret = FALSE){
 
 get_metrics <- function(predictors, model, real){
   
-  metric <- c()
+  metrics <- data.frame()
   for(m in names(model)){
     predicted <- predict(model[[m]], predictors)
-    metric[[m]] <- postResample(predicted, real)
+    metric <- as.data.frame(postResample(predicted, real))
+    colnames(metric) <- "value"
+    metric$model <- m
+    metrics <- rbind(metrics, metric)
   }
+  vars <- row.names(metrics)
+  metrics <- melt(metrics)
+  metrics$variable <- vars
   
-  return(metric)
+  return(metrics)
 
 }
 
-save_model <- function(label, x, y){
+get_time <- function(){
+  t <- round(as.numeric(as.POSIXct(Sys.time())), 0)
+  return(t)
+}
 
-  get_time <- function(){
-    t <- round(as.numeric(as.POSIXct(Sys.time())), 0)
-    return(t)
-  }
+save_model <- function(label, x, y){
   
   start_time <- get_time()
   model <- do_modeling(x, y)

@@ -78,4 +78,9 @@ for(l in labels){
     orig_sample
   )
 }
+
+# save metrics
+metrics <- melt(metrics)
+write.csv(metrics, file = paste("./metrics/", get_time(), ".csv", sep = ""))
+
 # stopCluster(cluster)
