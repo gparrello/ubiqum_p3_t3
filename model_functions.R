@@ -1,5 +1,4 @@
 pacman::p_load(
-  # "readr",
   "caret",
   "xgboost",
   "randomForest",
@@ -118,11 +117,14 @@ save_model <- function(label, x, y){
     start_time,
     "_",
     end_time,
-    ".rba",
     sep=""
   )
   
-  save(model, file = filename)
+  for (m in names(model)) {
+    filename <- paste(filename, "_", m, sep="")
+    save(model, file = paste(filename, ".rda", sep=""))
+    saveRDS(model, file = paste(filename, ".rds", sep=""))
+  }
   
   return(model)
 }
