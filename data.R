@@ -24,8 +24,7 @@ for (s in names(files)) {
   
   # set 100 to NAs/-105
   for (j in seq_along(d[, ..waps])) {
-    set(d, i = which(d[[j]] == 100), j = j, value = -105)
-    # set(d, i = which(d[[j]] == 100), j = j, value = NA)
+    set(d, i = which(d[[j]] == 100), j = j, value = NA)
   }
   
   # convert attributes to factor
@@ -33,11 +32,11 @@ for (s in names(files)) {
   
   # remove rows and columns with 0 variance
   d <- remove_novar(d)
+  waps <- grep("WAP", names(d), value=TRUE)
   
   # melt into long format
-  waps <- grep("WAP", names(d), value=TRUE)
   melt_ids <- colnames(d[,(length(waps)+1):ncol(d)])
-  l <- melt(d, id.vars = melt_ids)
+  l <- melt(d, id.vars = melt_ids, na.rm = TRUE)
   names(l)[names(l) == 'variable'] <- 'WAP'
   longdt[[s]] <- l
 
@@ -47,7 +46,6 @@ for (s in names(files)) {
   # add top WAPs columns
   n <- 1
   for (k in 1:n) {
-    waps <- grep("WAP", names(d), value=TRUE)
     tops <- apply(d[,..waps], 1, find_top_waps, k = k, names = FALSE)
     tops_names <- apply(d[,..waps], 1, find_top_waps, k = k, names = TRUE)
     d <- cbind(d, tops)
@@ -57,10 +55,14 @@ for (s in names(files)) {
   rm(n)
   d$tops_names <- as.factor(d$tops_names)
   
+  # set 100 to -105
+  for (j in seq_along(d[, ..waps])) {
+    set(d, i = which(is.na(d[[j]])), j = j, value = -105)
+  }
+  
   dt[[s]] <- d
   
   # rm(d, l)
-  # rm(keeprows, uniquelength)
 }
 
 common_columns <- intersect(
