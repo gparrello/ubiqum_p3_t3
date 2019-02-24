@@ -3,7 +3,8 @@ pacman::p_load(
   "xgboost",
   "randomForest",
   "e1071",
-  "gbm"
+  "gbm",
+  "doMC"
 )
 
 do_modeling <- function(x, y, caret = FALSE){
@@ -65,16 +66,22 @@ do_modeling <- function(x, y, caret = FALSE){
       allowParallel = TRUE
     )
 
-    model[["rf"]] <- randomForest(
+    model[["rf"]] <- foreach(
+      ntree=rep(100, 5),
+      .combine = combine,
+      .multicombine = TRUE,
+      .packages = "randomForest"
+    ) %dopar% {
+      randomForest(
       y = y,
       x = x,
       importance = TRUE,
       method = "rf",
-      ntree = 500,
+      ntree = ntree,
       mtry = bestmtry[[1]],
-      trControl = fitControl,
-      allowParallel = TRUE
-    )
+      trControl = fitControl
+      )
+    }
     
     temp_data <- as.data.frame(cbind(as.data.frame(x),as.data.frame(y)))
     model[["gbm"]] <- gbm(
