@@ -149,7 +149,7 @@ get_errors <- function(predicted, real){
 
 
 get_time <- function(){
-  t <- round(as.numeric(as.POSIXct(Sys.time())), 0)
+  t <- strftime(as.POSIXct(Sys.time()), "%Y%m%d%H%M")
   return(t)
 }
 
