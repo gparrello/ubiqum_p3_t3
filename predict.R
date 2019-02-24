@@ -1,4 +1,5 @@
 source("./data.R")
+source("./model_functions.R")
 
 data <- fread("./data/testData.csv")
 waps <- grep("WAP", names(data), value=TRUE)
@@ -15,7 +16,7 @@ variables <- c(
   "FLOOR",
   "LONGITUDE",
   "LATITUDE",
-  "LONGITUDE"
+  "LONGITUDE2"
 )
 names(variables) <- labels
 models <- c()
@@ -39,3 +40,9 @@ for (l in labels) {
     prediction <- p
   }
 }
+
+prediction$LONGITUDE <- prediction$LONGITUDE2
+prediction$LONGITUDE2 <- NULL
+
+filename <- paste("./predictions/", get_time(), ".csv", sep="")
+write.csv(prediction, file = filename)
