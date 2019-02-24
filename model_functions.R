@@ -166,7 +166,7 @@ save_model <- function(label, x, y){
   model <- do_modeling(x, y)
   end_time <- get_time()
   
-  filename <- paste(
+  filename1 <- paste(
     "./models/",
     label,
     "/",
@@ -177,9 +177,9 @@ save_model <- function(label, x, y){
   )
   
   for (m in names(model)) {
-    filename <- paste(filename, "_", m, sep="")
-    save(model, file = paste(filename, ".rda", sep=""))
-    saveRDS(model, file = paste(filename, ".rds", sep=""))
+    filename2 <- paste(filename1, "_", m, sep="")
+    save(model, file = paste(filename2, ".rda", sep=""))
+    saveRDS(model, file = paste(filename2, ".rds", sep=""))
   }
   
   return(model)
