@@ -3,6 +3,9 @@ source("./model_functions.R")
 
 data <- fread("./data/testData.csv")
 waps <- grep("WAP", names(data), value=TRUE)
+for (j in seq_along(data[, ..waps])) {
+  set(data, i = which(data[[j]] == 100), j = j, value = -105)
+}
 
 labels <- c(
   "building",
@@ -33,7 +36,6 @@ for (l in labels) {
   p <- predict(model$rf, d)
   p <- as.data.frame(p)
   colnames(p) <- variables[[l]]
-  # browser()
   if (!(prod(dim(prediction)) == 0)) {
     prediction <- cbind(prediction, p)
   } else {
