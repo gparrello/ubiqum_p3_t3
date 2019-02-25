@@ -15,13 +15,17 @@ do_training <- function(label, y, added_predictor, sample){
   data <- make_partition(sample, sample[[y]])
   train <- data[["train"]]
   validation <- data[["test"]]
+  ##train <- sample
+  ##validation <- sample
   
   # Modeling
+  print(paste("Training set size:", nrow(train)))
   data <- train
   predictors <- get_predictors(data, added_predictor)
   model <- save_model(label, data[predictors], data[[y]])
   
   # Get metrics
+  print(paste("Validation set size:", nrow(validation)))
   data <- validation
   predictors <- get_predictors(data, added_predictor)
   predicted <- get_predictions(data[predictors], model)
@@ -38,7 +42,7 @@ do_training <- function(label, y, added_predictor, sample){
   
 }
 
-sample_size <- 10
+sample_size <- 958
 orig_sample <- dt[["common"]] %>%
   group_by(BUILDINGID, FLOOR) %>%
   sample_n(sample_size)
@@ -83,6 +87,7 @@ for(l in labels){
     predicted[[l]],
     added_predictors[[l]],
     orig_sample
+    ##as.data.frame(dt[["common"]])
   )
 }
 
