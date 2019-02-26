@@ -107,3 +107,5 @@ dt[["common"]] <- rbind(
   dt[["train"]][,..common_columns],
   dt[["validation"]][,..common_columns]
 )
+dt[["common"]] <- remove_novar_cols(dt[["common"]])
+dt[["common"]] <- remove_novar_rows(dt[["common"]])
