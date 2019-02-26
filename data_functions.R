@@ -15,11 +15,17 @@ find_top_waps <- function(x, names = FALSE, k = 1){
 
 }
 
-remove_novar <- function(df){
+remove_novar_cols <- function(df){
   
   # Remove columns (WAP) where all the values are equal
   uniquelength <- sapply(df, function(x) length(unique(x)))
   df <- subset(df, select = uniquelength>1)
+
+  return(df)
+
+}
+  
+remove_novar_rows <- function(df){
   
   # Remove rows (WAP) where all the values are equal
   waps <- grep("WAP", names(df), value = TRUE)

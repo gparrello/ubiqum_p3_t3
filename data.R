@@ -33,7 +33,8 @@ for (s in names(files)) {
   d <- d[, (factors) := lapply(.SD, as.factor), .SDcols=factors]
   
   # remove rows and columns with 0 variance
-  d <- remove_novar(d)
+  d <- remove_novar_cols(d)
+  d <- remove_novar_rows(d)
   waps <- grep("WAP", names(d), value=TRUE)
   
   # melt into long format
@@ -59,6 +60,7 @@ for (s in names(files)) {
     set(d, i = which(is.na(d[[j]])), j = j, value = -105)
   }
   
+  d$set <- s
   dt[[s]] <- d
   
   # rm(d, l)
