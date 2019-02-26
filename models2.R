@@ -9,20 +9,24 @@ source("./model_functions.R")
 source("./data_functions.R")
 
 
-do_training <- function(label, y, added_predictor, sample){
+do_training <- function(label, y, added_predictor, sample, load_from_file = FALSE){
   
   # Prepare data
   data <- make_partition(sample, sample[[y]])
-  train <- data[["train"]]
-  validation <- data[["test"]]
-  ##train <- sample
-  ##validation <- sample
+  # train <- data[2["train"]]
+  # validation <- data[["test"]]
+  train <- sample
+  validation <- sample
   
   # Modeling
   print(paste("Training set size:", nrow(train)))
-  data <- train
-  predictors <- get_predictors(data, added_predictor)
-  model <- save_model(label, data[predictors], data[[y]])
+  if (load_from_file) {
+    load(paste(folder, label, ".rda", sep=""))
+  } else {
+    data <- train
+    predictors <- get_predictors(data, added_predictor)
+    model <- save_model(label, data[predictors], data[[y]])
+  }
   
   # Get metrics
   print(paste("Validation set size:", nrow(validation)))
@@ -34,6 +38,8 @@ do_training <- function(label, y, added_predictor, sample){
   # browser()
   
   result <- list(
+    predicted = predicted,
+    model = model,
     metric = metric,
     error = error
   )
@@ -77,6 +83,9 @@ added_predictors <- list(
 )
 names(predicted) <- labels
 names(added_predictors) <- labels
+folder <- "./best/"
+files_to_search <- unlist(lapply(labels, function(x) paste(x, ".rda", sep = "")))
+load_from_file <- sort(list.files(folder)) == sort(files_to_search)
 
 # Do the magic
 # cores <- 6
@@ -86,8 +95,9 @@ for(l in labels){
     l,
     predicted[[l]],
     added_predictors[[l]],
-    orig_sample
-    ##as.data.frame(dt[["common"]])
+    # orig_sample,
+    as.data.frame(dt[["common"]]),
+    load_from_file = load_from_file
   )
 }
 
