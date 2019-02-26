@@ -17,7 +17,8 @@ get_data <- function(x){
 
 get_mode <- function(v) {
   uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
+  mode <- uniqv[which.max(tabulate(match(v, uniqv)))]
+  return(mode)
 }
 
 folder <- "./experiment/"
@@ -30,7 +31,6 @@ names(list_df) <- prediction_files
 binded_df <- do.call(rbind, list_df)
 binded_df$BUILDINGID <- as.factor(binded_df$BUILDINGID)
 binded_df$FLOOR <- as.factor(binded_df$FLOOR)
-# browser()
 
 grouped_df <- binded_df %>%
   group_by(X) %>%
@@ -41,4 +41,4 @@ grouped_df <- binded_df %>%
     LATITUDE_avg = mean(LATITUDE)
   )
 
-# write.csv(grouped_df, file = paste(folder, "final.csv"), row.names = FALSE)
+write.csv(grouped_df, file = paste(folder, "final.csv"), row.names = FALSE)
