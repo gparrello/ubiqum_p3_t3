@@ -48,7 +48,7 @@ do_training <- function(label, y, added_predictor, sample, load_from_file = FALS
   
 }
 
-sample_size <- 958
+sample_size <- 944
 orig_sample <- dt[["common"]] %>%
   group_by(BUILDINGID, FLOOR) %>%
   sample_n(sample_size)
