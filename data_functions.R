@@ -50,3 +50,8 @@ make_partition <- function(data, dependent){
   return(sets)
   
 }
+
+get_waps <- function(df){
+  waps <- grep("WAP", names(df), value=TRUE)
+  return(waps)
+}
