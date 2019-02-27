@@ -38,7 +38,7 @@ grouped_df <- binded_df %>%
     LATITUDE = mean(LATITUDE)
   )
 
-write.csv(grouped_df, file = paste(folder, "final.csv"), row.names = FALSE)
+write.csv(grouped_df, file = paste(folder, "final.csv", sep = ""), row.names = FALSE)
 grouped_df$who <- "combined"
 full_df <- rbind(binded_df, grouped_df)
 
