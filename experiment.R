@@ -26,7 +26,7 @@ list_df <- lapply(
   prediction_files,
   get_data
 )
-names(list_df) <- prediction_files
+names(list_df) <- sub(".csv", "", prediction_files)
 binded_df <- do.call(rbind, list_df)
 binded_df$FLOOR <- as.factor(binded_df$FLOOR)
 
