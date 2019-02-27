@@ -42,33 +42,35 @@ write.csv(grouped_df, file = paste(folder, "final.csv"), row.names = FALSE)
 grouped_df$who <- "combined"
 full_df <- rbind(binded_df, grouped_df)
 
-ggplot(data = full_df) +
+plots <- c()
+
+plots[["latitude"]] <- ggplot(data = full_df) +
   aes(x = LATITUDE, fill = who) +
   geom_histogram(bins = 30) +
   theme_minimal() +
   facet_grid(cols=vars(who))
 
-ggplot(data = full_df) +
+plots[["longitude"]] <- ggplot(data = full_df) +
   aes(x = LONGITUDE, fill = who) +
   geom_histogram(bins = 30) +
   theme_minimal() +
   facet_grid(cols=vars(who))
 
-ggplot(data = full_df) +
+plots[["floor"]] <- ggplot(data = full_df) +
   aes(x = FLOOR, fill = who) +
-  geom_bar() +
-  theme_minimal() +
-  facet_grid(cols=vars(who))
+  geom_bar(position = "dodge", alpha = .7) +
+  theme_minimal() #+
+  # facet_grid(cols=vars(who))
 
-ggplot(data = full_df) +
+plots[["spatial"]] <- ggplot(data = full_df) +
   aes(x = LONGITUDE, y = LATITUDE, color = who) +
   geom_point() +
   theme_minimal() +
   facet_grid(cols=vars(FLOOR), rows=vars(who))
 
-ggplot(data = full_df) +
+plots[["spatial2"]] <- ggplot(data = full_df) +
   aes(x = LONGITUDE, y = LATITUDE, color = who) +
-  geom_point() +
+  geom_point(alpha = .4) +
   theme_minimal() +
   facet_wrap(vars(FLOOR))
 
