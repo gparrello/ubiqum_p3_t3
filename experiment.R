@@ -9,8 +9,8 @@ get_data <- function(x){
   df$FLOOR <- as.factor(df$FLOOR)
   df$LONGITUDE <- as.numeric(df$LONGITUDE)
   df$LATITUDE <- as.numeric(df$LATITUDE)
-  df <- df[c("X", "FLOOR", "LONGITUDE", "LATITUDE")]
-  df$who <- x
+  df <- df[c("X", "LATITUDE", "LONGITUDE", "FLOOR")]
+  df$who <- sub(".csv", "", x)
   return(df)
 }
 
@@ -33,9 +33,9 @@ binded_df$FLOOR <- as.factor(binded_df$FLOOR)
 grouped_df <- binded_df %>%
   group_by(X) %>%
   summarise(
-    FLOOR = get_mode(FLOOR),
+    LATITUDE = mean(LATITUDE),
     LONGITUDE = mean(LONGITUDE),
-    LATITUDE = mean(LATITUDE)
+    FLOOR = get_mode(FLOOR)
   )
 
 write.csv(grouped_df, file = paste(folder, "final.csv", sep = ""), row.names = FALSE)
