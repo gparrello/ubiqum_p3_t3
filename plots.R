@@ -7,7 +7,7 @@ pacman::p_load(
 )
 
 source("./data.R")
-source("./functions.R")
+source("./data_functions.R")
 df <- dt[["train"]]
 p <- ggplot(data = df) +
   aes(x = LONGITUDE, y = LATITUDE, color = TIMESTAMP) +
@@ -35,7 +35,7 @@ for (s in names(longdt)){
     labs(title = 'Signal for all WAPs',
          x = 'Signal',
          y = 'Frequency',
-         subtitle = 'Separated by building') +
+         subtitle = 'Separated by building and floor') +
     theme_minimal() +
     xlim(lowest_x,highest_x) +
     # facet_wrap(vars(BUILDINGID))
