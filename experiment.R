@@ -82,3 +82,12 @@ plots[["spatial2"]] <- ggplot(data = full_df) +
 #     y = LATITUDE,
 #     color = who
 #   )
+
+folder <- "./plots/experiment/"
+for (pn in names(plots)) {
+  p <- plots[[pn]]
+  filename <- paste(folder, pn, ".png", sep="")
+  png(file = filename, bg = "white", width = 900, height = 600)
+  plot(p)
+  dev.off()
+}
