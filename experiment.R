@@ -1,4 +1,5 @@
 pacman::p_load(
+  "ggplot2",
   "dplyr"
 )
 
