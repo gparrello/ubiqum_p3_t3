@@ -22,7 +22,7 @@ for (s in names(files)) {
   
   d <- fread(files[[s]])
   # orig[[s]] <- d
-  waps <- grep("WAP", names(d), value=TRUE)
+  waps <- get_waps(d)
   
   # set 100 to NAs/-105
   for (j in seq_along(d[, ..waps])) {
@@ -35,7 +35,7 @@ for (s in names(files)) {
   # remove rows and columns with 0 variance
   d <- remove_novar_cols(d)
   d <- remove_novar_rows(d)
-  waps <- grep("WAP", names(d), value=TRUE)
+  waps <- get_waps(d)
   
   # melt into long format
   melt_ids <- colnames(d[,(length(waps)+1):ncol(d)])
@@ -93,7 +93,7 @@ for (dn in names(dt)) {
     d, devs,
     by = "PHONEID"
   )
-  waps <- grep("WAP", names(d), value=TRUE)
+  waps <- get_waps(d)
   d <- d[, (waps) := lapply(.SD, function(x) x-abs_dev), .SDcols=waps]
   # dt[[dn]] <- d
 }
